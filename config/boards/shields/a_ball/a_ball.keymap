@@ -5,9 +5,11 @@
 #include <dt-bindings/zmk/mouse.h>
 #include <dt-bindings/zmk/ext_power.h>
 
-#define BASE   0
-#define LAYER2 1
-#define SCROLL 2
+#define BASE     0
+#define LAYER2   1
+#define SCROLL   2
+#define H_SCROLL 3
+#define V_SCROLL 4
 
 // Mouse speed increased
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1000  // default: 600
@@ -58,15 +60,20 @@
         //        9    10   11
         //       12          13
         //
-        // 1 ESC  2 tap=Right Click, hold=Layer2 (transparent, for future use)
+        // 1 ESC  2 tap=Right Click, hold=Right Click Layer (transparent, for future use)
         // 3/4 Middle Click  5 Left Click
         // 6 Back (MB4)  7 Forward (MB5)  8 Scroll (hold = momentary, tap = sticky)
         // 9 BT Reset  10 BT Next  11 Studio Unlock
         // 12/13 slide switches — unused, always &none
         //
         // Scroll layer overrides: 5 = Ctrl+Up, 6 = Ctrl+Left, 7 = Ctrl+Right
+        //
+        // Layers, in order: Base(0) / Right Click Layer(1) / Scroll(2) /
+        // H-Scroll(3, horizontal-only) / V-Scroll(4, vertical-only) /
+        // extra3-8 reserved for whatever you add via Studio next.
 
         base {
+            display-name = "Base";
             bindings = <
         &kp ESC                        &rclick_lt LAYER2 RCLK
         &mkp MCLK                      &mkp MCLK
@@ -76,7 +83,8 @@
             >;
         };
 
-        layer2 {
+        rclick_layer {
+            display-name = "Right Click Layer";
             bindings = <
         &trans  &trans
         &trans  &trans
@@ -87,6 +95,7 @@
         };
 
         scroll {
+            display-name = "Scroll";
             bindings = <
         &trans      &trans
         &trans      &trans
@@ -96,13 +105,31 @@
             >;
         };
 
-        // extra1 (layer 3) and extra2 (layer 4) already have ball behavior
-        // pre-wired in the overlay: layer 3 locks scrolling to horizontal
-        // only, layer 4 to vertical only. The first two layers you add via
-        // Studio will land here in order and inherit that behavior
-        // automatically, regardless of what bindings/trigger key you give them.
-        extra1 {status = "reserved";};
-        extra2 {status = "reserved";};
+        // Ball behavior for these two is pre-wired in the overlay: this
+        // layer locks scrolling to horizontal only, Y hard-zeroed.
+        h_scroll {
+            display-name = "H-Scroll";
+            bindings = <
+        &trans  &trans
+        &trans  &trans
+        &trans  &trans  &trans  &trans
+                &trans  &trans  &trans
+                &trans          &trans
+            >;
+        };
+
+        // Locks scrolling to vertical only, Y hard-zeroed in the overlay.
+        v_scroll {
+            display-name = "V-Scroll";
+            bindings = <
+        &trans  &trans
+        &trans  &trans
+        &trans  &trans  &trans  &trans
+                &trans  &trans  &trans
+                &trans          &trans
+            >;
+        };
+
         extra3 {status = "reserved";};
         extra4 {status = "reserved";};
         extra5 {status = "reserved";};

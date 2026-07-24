@@ -108,11 +108,11 @@
     compatible = "zmk,input-listener";
     device = <&trackball>;
 
-    /* layer-1 scroll: ball scrolls instead of moving the pointer.
-       Listed before the base pointer entry so it always wins while layer 1
+    /* layer-2 scroll: ball scrolls instead of moving the pointer.
+       Listed before the base pointer entry so it always wins while layer 2
        is active (held or sticky-tapped), even though layer 0 stays active underneath. */
     scroller: scroller {
-        layers           = <1>;
+        layers           = <2>;
         input-processors = <
             &zip_xy_transform (INPUT_TRANSFORM_X_INVERT) // Horizontal scroll inverted to match vertical
             &zip_xy_scaler 1 15                          // Scales the scroll speed

@@ -6,7 +6,8 @@
 #include <dt-bindings/zmk/ext_power.h>
 
 #define BASE   0
-#define SCROLL 1
+#define LAYER2 1
+#define SCROLL 2
 
 // Mouse speed increased
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1000  // default: 600
@@ -14,15 +15,35 @@
 
 / {
     behaviors {
-        // Hold this key to scroll only while held (&mo).
-        // Tap it once to stick in scroll mode until the next key press (&sl),
-        // so you can scroll hands-off and it clears itself on your next click.
+        // Custom sticky-layer with a very long timeout: the built-in &sl
+        // defaults to auto-releasing after ~1s. We want the scroll layer to
+        // only ever clear on the next key press (its normal sticky behavior),
+        // never on a timer, so the timeout here is set high enough to never
+        // realistically fire.
+        sticky_scroll: sticky_scroll {
+            compatible = "zmk,behavior-sticky-key";
+            #binding-cells = <1>;
+            bindings = <&mo>;
+            release-after-ms = <3600000>; // 1 hour - only a safety net, next keypress clears it first
+        };
+
+        // Hold key 8 to scroll only while held (&mo).
+        // Tap it once to stick in scroll mode until the next key press.
         scroll_ht: scroll_ht {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             tapping-term-ms = <200>;
             flavor = "tap-preferred";
-            bindings = <&mo>, <&sl>;
+            bindings = <&mo>, <&sticky_scroll>;
+        };
+
+        // Hold key 2 for a momentary secondary layer, tap for a normal right click.
+        rclick_lt: rclick_lt {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "tap-preferred";
+            bindings = <&mo>, <&mkp>;
         };
     };
 
@@ -37,14 +58,17 @@
         //        9    10   11
         //       12          13
         //
-        // 1 ESC  2 Right Click  3/4 Middle Click  5 Left Click
+        // 1 ESC  2 tap=Right Click, hold=Layer2 (transparent, for future use)
+        // 3/4 Middle Click  5 Left Click
         // 6 Back (MB4)  7 Forward (MB5)  8 Scroll (hold = momentary, tap = sticky)
         // 9 BT Reset  10 BT Next  11 Studio Unlock
         // 12/13 slide switches — unused, always &none
+        //
+        // Scroll layer overrides: 5 = Ctrl+Up, 6 = Ctrl+Left, 7 = Ctrl+Right
 
         base {
             bindings = <
-        &kp ESC                        &mkp RCLK
+        &kp ESC                        &rclick_lt LAYER2 RCLK
         &mkp MCLK                      &mkp MCLK
         &mkp LCLK  &mkp MB4  &mkp MB5  &scroll_ht SCROLL SCROLL
                    &bt BT_CLR  &bt BT_NXT  &studio_unlock
@@ -52,13 +76,23 @@
             >;
         };
 
-        scroll {
+        layer2 {
             bindings = <
         &trans  &trans
         &trans  &trans
         &trans  &trans  &trans  &trans
                 &trans  &trans  &trans
                 &trans          &trans
+            >;
+        };
+
+        scroll {
+            bindings = <
+        &trans      &trans
+        &trans      &trans
+        &kp LC(UP)  &kp LC(LEFT)  &kp LC(RIGHT)  &trans
+                    &trans  &trans  &trans
+                    &trans          &trans
             >;
         };
 

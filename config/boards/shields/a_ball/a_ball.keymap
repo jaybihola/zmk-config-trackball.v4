@@ -49,6 +49,24 @@
         };
     };
 
+    combos {
+        compatible = "zmk,combos";
+
+        // Left Click (5) + Scroll (8) held together -> momentary V-Scroll
+        combo_vscroll {
+            timeout-ms = <50>;
+            key-positions = <4 7>;
+            bindings = <&mo V_SCROLL>;
+        };
+
+        // Back/MB4 (6) + Scroll (8) held together -> momentary H-Scroll
+        combo_hscroll {
+            timeout-ms = <50>;
+            key-positions = <5 7>;
+            bindings = <&mo H_SCROLL>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 

@@ -96,6 +96,11 @@
             >;
         };
 
+        // extra1 (layer 3) and extra2 (layer 4) already have ball behavior
+        // pre-wired in the overlay: layer 3 locks scrolling to horizontal
+        // only, layer 4 to vertical only. The first two layers you add via
+        // Studio will land here in order and inherit that behavior
+        // automatically, regardless of what bindings/trigger key you give them.
         extra1 {status = "reserved";};
         extra2 {status = "reserved";};
         extra3 {status = "reserved";};

@@ -120,6 +120,32 @@
         >;
     };
 
+    /* layer-3 (the "extra1" reserved slot): scroll locked to horizontal only.
+       Y is hard-zeroed rather than just biased, so vertical ball movement
+       has no effect at all while this layer is active. Whatever key you
+       assign to reach layer 3 via Studio gets this behavior automatically. */
+    h_scroller: h_scroller {
+        layers           = <3>;
+        input-processors = <
+            &zip_xy_transform (INPUT_TRANSFORM_X_INVERT) // Matches the existing horizontal invert
+            &zip_x_scaler 1 15                           // Normal scroll speed on X
+            &zip_y_scaler 0 1                            // Y zeroed out - locked horizontal
+            &zip_xy_to_scroll_mapper
+        >;
+    };
+
+    /* layer-4 (the "extra2" reserved slot): scroll locked to vertical only.
+       X is hard-zeroed. Whatever key you assign to reach layer 4 via Studio
+       gets this behavior automatically. */
+    v_scroller: v_scroller {
+        layers           = <4>;
+        input-processors = <
+            &zip_y_scaler 1 15                           // Normal scroll speed on Y
+            &zip_x_scaler 0 1                            // X zeroed out - locked vertical
+            &zip_xy_to_scroll_mapper
+        >;
+    };
+
     /* layer-0 base pointer */
     base_pointer: base_pointer {
         layers           = <0>;
